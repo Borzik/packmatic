@@ -52,9 +52,16 @@ defmodule Packmatic do
 
     next_fun = fn {status, state} ->
       case Encoder.stream_next(status, state) do
-        {:ok, :halt, status, state} -> {:halt, {status, state}}
-        {:ok, data, status, state} -> {[data], {status, state}}
-        {:error, reason} -> raise StreamError, reason: reason
+        {:ok, :halt, status, state} ->
+          {:halt, {status, state}}
+
+        {:ok, data, status, state} ->
+          {[data], {status, state}}
+
+        {:error, reason} ->
+          raise StreamError,
+            message: "unable to construct Stream due to underlying error: #{inspect(reason)}",
+            reason: reason
       end
     end
 
